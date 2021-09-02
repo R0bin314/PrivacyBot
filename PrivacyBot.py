@@ -8,17 +8,29 @@ client=commands.Bot(command_prefix=";")
 #if "youtu.be", etc, make it if triggerword in messagecontent, return with trigger word + replacement
 
 def replace_links(messagecontent):
+
+    if "www.youtu.be" in messagecontent:
+        return ("www.youtu.be","redirect.invidious.io")
+    elif "www.youtube.com" in messagecontent:
+        return("www.youtube.com","redirect.invidious.io")
+    elif "www.twitter.com" in messagecontent:
+        return ("www.twitter.com","nitter.net")
+    elif "www.instagram.com" in messagecontent:
+        return ("www.instagram.com","bibliogram.snopyta.org")
+    elif "www.reddit.com" in messagecontent:
+        return ("www.reddit.com","libredd.it")
     
-    if "youtu.be" in messagecontent:
-        return ("youtu.be","invidious.io")
-    if "youtube.com" in messagecontent:
-        return("youtube.com","invidious.io")
+    elif "youtu.be" in messagecontent:
+        return ("youtu.be","redirect.invidious.io")
+    elif "youtube.com" in messagecontent:
+        return("youtube.com","redirect.invidious.io")
     elif "twitter.com" in messagecontent:
         return ("twitter.com","nitter.net")
     elif "instagram.com" in messagecontent:
         return ("instagram.com","bibliogram.snopyta.org")
     elif "reddit.com" in messagecontent:
         return ("reddit.com","libredd.it")
+    
     else:
         return
 @client.event
