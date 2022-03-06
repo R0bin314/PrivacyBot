@@ -1,53 +1,62 @@
-import discord
+from urllib.parse import urlparse
 from discord.ext import commands
 
-token="TOKEN"
-client=commands.Bot(command_prefix=";")
+token = "TOKEN"
+client = commands.Bot(command_prefix=";")
 
-#TODO: use trigger word method so instead of doing
-#if "youtu.be", etc, make it if triggerword in messagecontent, return with trigger word + replacement
 
 def replace_links(messagecontent):
+    originalUrls = []
+    redirectedUrls = []
+    words = []
 
-    if "www.youtu.be" in messagecontent:
-        return ("www.youtu.be","redirect.invidious.io")
-    elif "www.youtube.com" in messagecontent:
-        return("www.youtube.com","redirect.invidious.io")
-    elif "www.twitter.com" in messagecontent:
-        return ("www.twitter.com","nitter.net")
-    elif "www.instagram.com" in messagecontent:
-        return ("www.instagram.com","bibliogram.snopyta.org")
-    elif "www.reddit.com" in messagecontent:
-        return ("www.reddit.com","libredd.it")
-    
-    elif "youtu.be" in messagecontent:
-        return ("youtu.be","redirect.invidious.io")
-    elif "youtube.com" in messagecontent:
-        return("youtube.com","redirect.invidious.io")
-    elif "twitter.com" in messagecontent:
-        return ("twitter.com","nitter.net")
-    elif "instagram.com" in messagecontent:
-        return ("instagram.com","bibliogram.snopyta.org")
-    elif "reddit.com" in messagecontent:
-        return ("reddit.com","libredd.it")
-    
-    else:
-        return
+    for word in messagecontent.split(" "):
+        wordsNL = word.split("\n")
+        words.append(wordsNL[0])
+
+    redirectDictionary = {
+        "youtu.be": "redirect.invidious.io",
+        "youtube.com": "redirect.invidious.io",
+        "twitter.com": "nitter.net",
+        "instagram.com": "bibliogram.snopyta.org",
+        "reddit.com": "libredd.it"
+    }
+
+    for word in words:
+        if "http" in word:
+            originalUrls.append(word)
+
+    for url in originalUrls:
+        urlInfo = urlparse(url)
+        website = urlInfo.netloc
+        if website in redirectDictionary.keys():
+            redirectedUrl = url.replace(website, redirectDictionary[website])
+            redirectedUrls.append(redirectedUrl)
+
+    replyString = "**Privacy friendly versions:**\n\n"
+    for i in range(0, len(redirectedUrls)):
+        replyString += redirectedUrls[i] + "\n"
+    return replyString, redirectedUrls
+
+
 @client.event
 async def on_ready():
     print("Privacy bot online.")
+
 
 @client.event
 async def on_message(message):
     try:
         author = message.author
-        authorid = message.author.id
         if author == client.user:
             return
         else:
-            if "goatsedance.com" in message.content:
-                await message.reply("**DON'T CLICK ON THE REPLIED LINK. IT'S A SHOCK SITE.**\nAlso, congrats on finding this easter egg!\nHere's a family friendly version: https://hamster.dance/hamsterdance/ <:Yui:817547924707082280>") 
-            await message.reply("Privacy friendly version: " + (message.content).replace((replace_links(message.content))[0],(replace_links(message.content))[1]), mention_author=False)
+            replyContent, redirectedUrls = replace_links(message.content)
+            if redirectedUrls:
+                await message.reply(replyContent, mention_author=False)
+
     except TypeError:
         return
+
+
 client.run(token)
