@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 from discord.ext import commands
 
 # Create bot
-token = "OTUwMTQ3NjI4MDQ0Mjg4MDM0.YiUr7w.b4sYHheVmofwRGAqjTDNNe_Of_k"
+token = "TOKEN"
 client = commands.Bot(command_prefix=";")
 
 
