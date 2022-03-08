@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 from discord.ext import commands
 
 # Create bot
-token = "TOKEN"
+token = "OTUwMTQ3NjI4MDQ0Mjg4MDM0.YiUr7w.b4sYHheVmofwRGAqjTDNNe_Of_k"
 client = commands.Bot(command_prefix=";")
 
 
@@ -11,11 +11,8 @@ client = commands.Bot(command_prefix=";")
 def replace_links(messagecontent):  # Replace links with privacy-friendly links
     originalUrls = []    # Normal URLs
     redirectedUrls = []  # Privacy-friendly URLs
-    words = []  # Words in the message
 
-    for word in messagecontent.split(" "):  # Remove new lines
-        wordsNL = word.split("\n")
-        words.append(wordsNL[0])
+    words = messagecontent.split(" ")[0].split("\n")  # Words in the message
 
     redirectDictionary = {  # "normal.link": "private.link"
         "youtu.be": "redirect.invidious.io",
